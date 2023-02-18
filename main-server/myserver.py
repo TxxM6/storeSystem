@@ -72,11 +72,6 @@ def text_update_request(json):
     # 全員向けに送信すると入力の途中でテキストエリアが変更されて日本語入力がうまくできない
     emit('text_update', {'text': text}, broadcast=True, include_self=False)
 
-#メッセージ
-@socketio.on('sendM')
-def sendM(msg):
-    emit('addText',f'fromM:{msg}')
-    emit('changeWaitMessenger',{'newState':True})
 
 #コマンド
 @socketio.on('catch_command')
@@ -134,7 +129,6 @@ def video_catch(data):
 @socketio.on('get_under',namespace='/under')
 def camera_catchget_under(data):
     emit('send_under','welcome', broadcast=True)
-    print('send under')
 
 
 #======================(EC)=====================================
@@ -142,8 +136,7 @@ def camera_catchget_under(data):
 def req_DB():
     my_query=MSF.get_DB()
     emit('recieve_DB',my_query)
-    #print(my_query)
-    #print('query_send')
+
 
 @socketio.on('EC_setM',namespace='/ec_path')
 def EC_setM(pname):

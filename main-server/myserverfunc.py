@@ -1,5 +1,6 @@
 import sqlite3
-dbPath='C:/Users/user/Desktop/soturon/mydb/products.db'
+import os
+dbPath= os.path.join(os.getcwd(),os.path.abspath('./mydb/products.db'))
 
 def get_DB():
 
