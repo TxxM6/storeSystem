@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <title>カメラクライアント</title>
+  </head>
+  <body>
+    <p>クライアントの接続数<span id="user_count"></span>人</p>
+    <button id="cameraBon" type="button" value="on" onclick=send_cameraMODE(this.value)>カメラON</button>
+    <button id="cameraBoff" type="button" value="off" onclick=send_cameraMODE(this.value)>カメラOFF</button>
+    <br>
+    <div id="camera-mode"></div>
+    <img id="photo_zone" src=""/>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" charset="utf-8">
+
+      var socket = io();
+      var video_socket = io('/video_path');
+
+
+      //起動時
+      socket.on('connect', function(msg) {
+        socket.emit('ask_cameraMODE')
+      });
+
+      // 接続者数の更新
+      socket.on('count_update', function(msg) {
+        $('#user_count').html(msg.user_count);
+      });
+
+      socket.on('catch_cameraMODE', function(mode) {
+        console.log(mode)
+        document.querySelector("#camera-mode").textContent='現在のカメラモード:'+mode;
+      });
+
+      //映像(写真)データ受信
+      video_socket.on('recieve_video',function(photodata){
+        const photo_zone = document.getElementById("photo_zone");
+        photo_zone.setAttribute("src", "data:image/jpg;base64,"+photodata)
+      });
+      
+
+      socket.on('cameraON',function(mode){
+        const photo_zone = document.getElementById("photo_zone");
+        photo_zone.style.visibility='visible';
+        document.querySelector("#camera-mode").textContent='現在のカメラモード:'+mode;
+        console.log('cameraON')
+      });
+
+      socket.on('cameraOFF',function(mode){
+        const photo_zone = document.getElementById("photo_zone");
+        photo_zone.style.visibility='hidden';
+        document.querySelector("#camera-mode").textContent='現在のカメラモード:'+mode;
+        console.log('cameraOFF')});
+        
+
+
+      function send_cameraMODE(mode){
+        socket.emit('camera_switch', mode);
+      }
+
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<html>
+  <head>
+    <title>命令クライアント</title>
+  </head>
+  <body>
+    <p>クライアント接続数<span id="user_count"></span>人</p>
+    <button id="cameraBon" type="button" value="on" onclick=send_camera_mode(this.value)>カメラON</button>
+    <button id="cameraBoff" type="button" value="off" onclick=send_camera_mode(this.value)>カメラOFF</button>
+    <br><br>
+    <button type="button" onclick=EC_yesM()>購入</button>
+    <button type="button" onclick=EC_noM()>やめる</button>
+    <button type="button" onclick=EC_plusM()>+1</button>
+    <button type="button" onclick=EC_minusM()>-1</button>
+    <br><br>
+    <div>個数を直接入力<br>
+    <input type="number" name="quantity1" id="pnum" value=1><button type="button" onclick=EC_numM()>個数決定</button>
+    </div>
+    <br><br>
+    <button type="button" value="からあげ" onclick=EC_setM(this.value)>からあげ</button>
+    <button type="button" value="お茶" onclick=EC_setM(this.value)>お茶</button>
+    <button type="button" value="からあげ" onclick=EC_setM(this.value)>からあげ</button>
+    <button type="button" value="チョコレート" onclick=EC_setM(this.value)>チョコレート</button>
+    <button type="button" value="お茶" onclick=EC_setM(this.value)>お茶</button>
+    <button type="button" value="おもちゃ" onclick=EC_setM(this.value)>おもちゃ</button>
+    <button type="button" value="コーラ" onclick=EC_setM(this.value)>コーラ</button>
+    <br>
+    <button type="button" value="バニラアイス" onclick=EC_setM(this.value)>バニラアイス</button>
+    <button type="button" value="フライドポテト" onclick=EC_setM(this.value)>フライドポテト</button>
+    <button type="button" value="プリン" onclick=EC_setM(this.value)>プリン</button>
+    <button type="button" value="ポテトチップス" onclick=EC_setM(this.value)>ポテトチップス</button>
+    <button type="button" value="ポケットティッシュ" onclick=EC_setM(this.value)>ポケットティッシュ</button>
+    <button type="button" value="肉まん" onclick=EC_setM(this.value)>肉まん</button>
+    <button type="button" value="抹茶アイス" onclick=EC_setM(this.value)>抹茶アイス</button>
+    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" charset="utf-8">
+      var socket = io();
+      var EC = io('/ec_path');
+
+      // 接続者数の更新
+      socket.on('count_update', function(msg) {
+        $('#user_count').html(msg.user_count);
+      });
+      
+
+
+
+      socket.on('cameraON',function(){
+            console.log('camera-on')
+      });
+      socket.on('cameraOFF',function(){
+            console.log('camera_off')
+      });
+      
+      
+      //============={EC(モーダル)}=========================
+      function EC_setM(pname){EC.emit('EC_setM', pname);};
+
+      function EC_yesM(){EC.emit('EC_yesM');};
+
+      function EC_noM(){EC.emit('EC_noM');};
+
+
+
+      function EC_numM(){EC.emit('EC_numM',document.querySelector("#pnum").value);};
+
+      function EC_plusM(){EC.emit('EC_plusM')};
+      function EC_minusM(){EC.emit('EC_minusM')};
+
+
+      //カメラ
+      function send_camera_mode(mode){
+        socket.emit('camera_switch', mode);
+      };
+
+
+    </script>
+  </body>
+</html>
